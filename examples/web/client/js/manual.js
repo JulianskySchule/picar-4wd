@@ -147,77 +147,79 @@ Manual.setUltrasonicSean = function (data) {
 //     requireWebsocket.reqWs.send(JSON.stringify(Manual.sendValue))
 // }
 
+Manual.pressedKeys = {
+    up: false,
+    down: false,
+    left: false,
+    right: false,
+};
+
+Manual.updateControl = function () {
+    if (Manual.pressedKeys.up) {
+        Manual.sendValue['RC'] = Manual.pressedKeys.right ? 'forward_right' : (Manual.pressedKeys.left ? 'forward_left' : 'forward');
+    } else if (Manual.pressedKeys.down) {
+        Manual.sendValue['RC'] = Manual.pressedKeys.right ? 'backward_right' : (Manual.pressedKeys.left ? 'backward_left' : 'backward');
+    } else {
+        Manual.sendValue['RC'] = 'rest';
+    }
+    requireWebsocket.reqWs.send(JSON.stringify(Manual.sendValue));
+};
+
 Manual.upArrowEvent = function () {
-    var timeout = '';
     $('.up_arrowKey_div').on({
         "touchstart": function (e) {
             e.preventDefault();
-            Manual.sendValue['RC'] = 'forward'
-            timeout = setInterval(function(){
-                requireWebsocket.reqWs.send(JSON.stringify(Manual.sendValue))
-            }, 30)
+            Manual.pressedKeys.up = true;
+            Manual.updateControl();
         },
         "touchend": function () {
-            clearInterval(timeout);
-            Manual.sendValue['RC'] = 'rest'
-            requireWebsocket.reqWs.send(JSON.stringify(Manual.sendValue))
+            Manual.pressedKeys.up = false;
+            Manual.updateControl();
         }
-    })
-}
+    });
+};
 
 Manual.downArrowEvent = function () {
-    var timeout = '';
     $('.down_arrowKey_div').on({
         "touchstart": function (e) {
             e.preventDefault();
-            Manual.sendValue['RC'] = 'backward'
-            timeout = setInterval(function(){
-                requireWebsocket.reqWs.send(JSON.stringify(Manual.sendValue))
-            }, 30)
+            Manual.pressedKeys.down = true;
+            Manual.updateControl();
         },
         "touchend": function () {
-            clearInterval(timeout);
-            Manual.sendValue['RC'] = 'rest'
-            requireWebsocket.reqWs.send(JSON.stringify(Manual.sendValue))
+            Manual.pressedKeys.down = false;
+            Manual.updateControl();
         }
-    })
-}
+    });
+};
 
 Manual.leftArrowEvent = function () {
-    var timeout = '';
     $('.left_arrowKey_div').on({
         "touchstart": function (e) {
             e.preventDefault();
-            Manual.sendValue['RC'] = 'turn_left'
-            timeout = setInterval(function(){
-                requireWebsocket.reqWs.send(JSON.stringify(Manual.sendValue))
-            }, 30)
+            Manual.pressedKeys.left = true;
+            Manual.updateControl();
         },
         "touchend": function () {
-            clearInterval(timeout);
-            Manual.sendValue['RC'] = 'rest'
-            requireWebsocket.reqWs.send(JSON.stringify(Manual.sendValue))
+            Manual.pressedKeys.left = false;
+            Manual.updateControl();
         }
-    })
-}
+    });
+};
 
 Manual.rightArrowEvent = function () {
-    var timeout = '';
     $('.right_arrowKey_div').on({
         "touchstart": function (e) {
             e.preventDefault();
-            Manual.sendValue['RC'] = 'turn_right'
-            timeout = setInterval(function(){
-                requireWebsocket.reqWs.send(JSON.stringify(Manual.sendValue))
-            }, 30)
+            Manual.pressedKeys.right = true;
+            Manual.updateControl();
         },
         "touchend": function () {
-            clearInterval(timeout);
-            Manual.sendValue['RC'] = 'rest'
-            requireWebsocket.reqWs.send(JSON.stringify(Manual.sendValue))
+            Manual.pressedKeys.right = false;
+            Manual.updateControl();
         }
-    })
-}
+    });
+};
 
 
 
